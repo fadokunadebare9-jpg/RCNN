@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RCN Magodo — Church Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d1b2e;--navy2:#122040;--navy3:#1a2d4a;
+  --cream:#faf8f4;--white:#fff;
+  --gold:#d4a95a;--gold-light:#e8c47a;
+  --terra:#c46434;--terra-light:#d97845;--terra-bg:rgba(196,100,52,.1);
+  --green:#1d9e75;--green-bg:rgba(29,158,117,.1);
+  --blue:#185fa5;--blue-bg:rgba(24,95,165,.1);
+  --red:#a32d2d;--red-bg:rgba(163,45,45,.1);
+  --amber:#ba7517;--amber-bg:rgba(186,117,23,.1);
+  --purple:#534ab7;--purple-bg:rgba(83,74,183,.1);
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.13);
+  --text1:#1a1a2e;--text2:#4b5563;--text3:#9ca3af;
+  --sidebar-w:248px;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-body:'DM Sans',sans-serif;
+  --radius:10px;--radius-lg:14px;
+  --shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.05);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);
+}
+html{font-size:15px;font-family:var(--font-body);color:var(--text1);background:var(--cream);}
+body{display:flex;min-height:100vh;overflow-x:hidden;}
+button,input,select,textarea{font-family:inherit;font-size:inherit;}
+button{cursor:pointer;}
+a{text-decoration:none;color:inherit;}
+
+/* ══════════════════════════════════════════
+   AUTH PAGES (Login / Register)
+══════════════════════════════════════════ */
+#auth-wrapper{
+  display:flex;min-height:100vh;width:100%;
+  background:var(--navy);
+}
+#auth-wrapper.hidden{display:none;}
+
+.auth-panel-left{
+  flex:1;display:flex;flex-direction:column;justify-content:space-between;
+  padding:48px;background:var(--navy);position:relative;overflow:hidden;
+}
+.auth-panel-left::before{
+  content:'';position:absolute;
+  top:-120px;right:-80px;
+  width:420px;height:420px;
+  background:radial-gradient(circle,rgba(212,169,90,.13) 0%,transparent 68%);
+  border-radius:50%;pointer-events:none;
+}
+.auth-panel-left::after{
+  content:'';position:absolute;
+  bottom:-100px;left:-60px;
+  width:320px;height:320px;
+  background:radial-gradient(circle,rgba(196,100,52,.10) 0%,transparent 68%);
+  border-radius:50%;pointer-events:none;
+}
+.auth-brand{display:flex;align-items:center;gap:14px;}
+.auth-brand-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),var(--terra));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-size:14px;font-weight:700;color:var(--navy);
+  letter-spacing:.5px;box-shadow:0 4px 16px rgba(212,169,90,.3);
+}
+.auth-brand-text .l1{font-family:var(--font-serif);font-size:20px;font-weight:700;color:#fff;letter-spacing:.3px;}
+.auth-brand-text .l2{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.5px;margin-top:1px;}
+.auth-panel-left-body{padding:20px 0;}
+.auth-tagline{
+  font-family:var(--font-serif);
+  font-size:38px;font-weight:600;line-height:1.18;
+  color:#fff;margin-bottom:20px;
+  max-width:360px;
+}
+.auth-tagline span{color:var(--gold);}
+.auth-desc{font-size:13.5px;color:rgba(255,255,255,.45);line-height:1.7;max-width:340px;}
+.auth-features{display:flex;flex-direction:column;gap:12px;margin-top:32px;}
+.auth-feature{display:flex;align-items:center;gap:12px;}
+.auth-feature-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.auth-feature span{font-size:13px;color:rgba(255,255,255,.6);}
+.auth-panel-left-footer{font-size:11.5px;color:rgba(255,255,255,.2);}
+
+.auth-panel-right{
+  width:460px;flex-shrink:0;
+  background:var(--cream);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:48px 44px;
+  box-shadow:-8px 0 40px rgba(0,0,0,.2);
+}
+.auth-form-switcher{
+  display:flex;gap:4px;background:rgba(0,0,0,.06);border-radius:10px;padding:4px;
+  margin-bottom:32px;
+}
+.auth-tab{
+  flex:1;padding:9px;border-radius:8px;font-size:13px;font-weight:500;
+  border:none;background:transparent;color:var(--text2);transition:all .2s;
+}
+.auth-tab.active{background:var(--white);color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+
+.auth-form{display:none;flex-direction:column;gap:0;}
+.auth-form.active{display:flex;}
+.auth-form-title{font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.auth-form-sub{font-size:13px;color:var(--text3);margin-bottom:28px;line-height:1.5;}
+.auth-field{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.auth-field label{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:.2px;}
+.auth-field input,.auth-field select{
+  border:1.5px solid var(--border2);border-radius:9px;padding:11px 14px;
+  font-size:13.5px;outline:none;background:var(--white);color:var(--text1);
+  transition:all .2s;
+}
+.auth-field input:focus,.auth-field select:focus{border-color:var(--terra);box-shadow:0 0 0 3px rgba(196,100,52,.1);}
+.auth-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.auth-submit{
+  background:var(--navy);color:#fff;border:none;border-radius:10px;
+  padding:13px;font-size:14px;font-weight:600;letter-spacing:.2px;
+  transition:all .2s;margin-top:4px;width:100%;
+  box-shadow:0 4px 16px rgba(13,27,46,.25);
+}
+.auth-submit:hover{background:var(--navy2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,27,46,.3);}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text3);font-size:12px;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.auth-error{
+  background:var(--red-bg);border:1px solid rgba(163,45,45,.2);
+  color:var(--red);font-size:12.5px;border-radius:8px;
+  padding:10px 14px;margin-bottom:12px;display:none;
+}
+.auth-error.show{display:block;}
+.auth-success{
+  background:var(--green-bg);border:1px solid rgba(29,158,117,.2);
+  color:var(--green);font-size:12.5px;border-radius:8px;
+  padding:10px 14px;margin-bottom:12px;display:none;
+}
+.auth-success.show{display:block;}
+.auth-forgot{font-size:12px;color:var(--terra);text-align:right;margin-top:-10px;margin-bottom:16px;cursor:pointer;display:inline-block;width:100%;}
+.auth-forgot:hover{text-decoration:underline;}
+.auth-role-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.role-card{
+  border:1.5px solid var(--border);border-radius:10px;padding:12px;
+  display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .2s;background:var(--white);
+}
+.role-card.selected{border-color:var(--terra);background:var(--terra-bg);}
+.role-card-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.role-card-icon svg{width:16px;height:16px;}
+.role-card-label{font-size:12.5px;font-weight:500;}
+.role-card-sub{font-size:11px;color:var(--text3);}
+
+/* ══════════════════════════════════════════
+   APP WRAPPER
+══════════════════════════════════════════ */
+#app-wrapper{display:flex;width:100%;min-height:100vh;}
+#app-wrapper.hidden{display:none;}
+
+/* ── Sidebar ─────────────────────────────────────────── */
+#sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--navy);min-height:100vh;
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  transition:transform .3s cubic-bezier(.77,0,.18,1);
+}
+.sb-logo{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:12px;}
+.sb-logo-icon{
+  width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),var(--terra));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-size:13px;font-weight:700;color:var(--navy);flex-shrink:0;
+}
+.sb-logo-text .l1{font-family:var(--font-serif);font-size:15px;font-weight:700;color:#fff;letter-spacing:.3px;}
+.sb-logo-text .l2{font-size:9.5px;color:rgba(255,255,255,.35);letter-spacing:.4px;margin-top:1px;}
+.sb-nav{flex:1;padding:12px 10px;overflow-y:auto;}
+.sb-section{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.25);padding:16px 12px 7px;}
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  font-size:13px;font-weight:400;color:rgba(255,255,255,.65);
+  cursor:pointer;transition:all .18s;margin-bottom:2px;
+  border:none;background:none;width:100%;text-align:left;
+}
+.sb-item svg{width:16px;height:16px;flex-shrink:0;opacity:.65;}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9);}
+.sb-item.active{background:rgba(196,100,52,.2);color:var(--terra-light);font-weight:500;}
+.sb-item.active svg{opacity:1;}
+.sb-badge{margin-left:auto;background:var(--terra);color:#fff;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:99px;}
+.sb-badge-green{margin-left:auto;background:var(--green);color:#fff;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:99px;}
+.sb-bottom{padding:14px 10px;border-top:1px solid rgba(255,255,255,.07);}
+.sb-user{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;}
+.sb-user:hover{background:rgba(255,255,255,.05);}
+.sb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--gold));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.sb-user-text .name{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.88);}
+.sb-user-text .role{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.3px;}
+.sb-logout{margin-top:6px;display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:none;background:none;width:100%;color:rgba(255,255,255,.35);font-size:12px;cursor:pointer;transition:all .15s;}
+.sb-logout:hover{background:rgba(163,45,45,.15);color:rgba(255,100,100,.7);}
+.sb-logout svg{width:14px;height:14px;}
+
+/* ── Main ────────────────────────────────────────────── */
+#main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-width:0;}
+
+/* ── Topbar ──────────────────────────────────────────── */
+.topbar{
+  height:62px;background:var(--white);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;position:sticky;top:0;z-index:100;
+}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+#menu-toggle{display:none;background:none;border:none;padding:4px;}
+#menu-toggle svg{width:22px;height:22px;color:var(--text1);}
+.page-title{font-size:16px;font-weight:500;color:var(--text1);}
+.topbar-search{display:flex;align-items:center;gap:8px;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:0 12px;height:36px;width:240px;}
+.topbar-search svg{width:15px;height:15px;color:var(--text3);flex-shrink:0;}
+.topbar-search input{border:none;background:none;outline:none;font-size:13px;color:var(--text1);width:100%;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.icon-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:none;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background .15s;}
+.icon-btn:hover{background:var(--cream);}
+.icon-btn svg{width:18px;height:18px;}
+.notif-dot{position:relative;}
+.notif-dot::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--terra);border-radius:50%;border:2px solid #fff;}
+.topbar-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--gold));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--navy);cursor:pointer;border:2px solid var(--gold);flex-shrink:0;}
+
+/* ── Content area ────────────────────────────────────── */
+.content{padding:28px;flex:1;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── Dashboard page ──────────────────────────────────── */
+.welcome-bar{
+  background:var(--navy);border-radius:var(--radius-lg);
+  padding:26px 30px;display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;overflow:hidden;position:relative;
+}
+.welcome-bar::before{content:'';position:absolute;right:180px;top:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(212,169,90,.08) 0%,transparent 70%);border-radius:50%;}
+.welcome-bar::after{content:'';position:absolute;right:-60px;top:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(196,100,52,.1) 0%,transparent 70%);border-radius:50%;}
+.welcome-bar .greet{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:7px;}
+.welcome-bar h2{font-family:var(--font-serif);font-size:24px;color:#fff;font-weight:700;margin-bottom:5px;}
+.welcome-bar p{font-size:12.5px;color:rgba(255,255,255,.45);}
+.live-badge{background:rgba(29,158,117,.2);border:1px solid rgba(29,158,117,.3);color:#4eca9b;font-size:11px;font-weight:600;padding:6px 14px;border-radius:99px;display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:1;}
+.live-dot{width:6px;height:6px;background:#4eca9b;border-radius:50%;animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;transition:box-shadow .2s;}
+.stat-card:hover{box-shadow:var(--shadow);}
+.stat-card .sc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.stat-card .sc-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.stat-card .sc-icon svg{width:18px;height:18px;}
+.stat-card .sc-change{font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;}
+.stat-card .sc-change.up{background:var(--green-bg);color:var(--green);}
+.stat-card .sc-change.down{background:var(--red-bg);color:var(--red);}
+.stat-card .sc-val{font-size:28px;font-weight:700;margin-bottom:2px;line-height:1;color:var(--navy);}
+.stat-card .sc-label{font-size:12px;color:var(--text3);}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+@media(max-width:860px){.two-col{grid-template-columns:1fr;}}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-head h3{font-size:14px;font-weight:600;}
+.card-head .card-action{font-size:12px;color:var(--terra);cursor:pointer;font-weight:500;}
+.card-head .card-action:hover{text-decoration:underline;}
+
+/* Mini bar chart */
+.mini-chart{display:flex;align-items:flex-end;gap:5px;height:70px;margin-top:8px;}
+.mini-bar{flex:1;border-radius:4px 4px 0 0;min-width:0;transition:opacity .2s;}
+.mini-bar:hover{opacity:.75;}
+.mini-labels{display:flex;gap:5px;margin-top:4px;}
+.mini-labels span{flex:1;text-align:center;font-size:9.5px;color:var(--text3);}
+
+/* Activity list */
+.activity-list{display:flex;flex-direction:column;gap:0;}
+.act-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.act-item:last-child{border-bottom:none;padding-bottom:0;}
+.act-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;}
+.act-body{flex:1;min-width:0;}
+.act-body .act-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.act-body .act-desc{font-size:12px;color:var(--text3);}
+.act-time{font-size:11px;color:var(--text3);flex-shrink:0;}
+
+/* Quick actions */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.quick-btn{border:1px solid var(--border);background:none;border-radius:10px;padding:13px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .18s;text-align:left;}
+.quick-btn:hover{background:var(--cream);border-color:var(--border2);}
+.quick-btn .qb-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.quick-btn .qb-icon svg{width:16px;height:16px;}
+.quick-btn .qb-label{font-size:12.5px;font-weight:500;line-height:1.3;}
+.quick-btn .qb-sub{font-size:11px;color:var(--text3);}
+
+/* Events */
+.event-list{display:flex;flex-direction:column;gap:10px;}
+.event-item{display:flex;align-items:center;gap:12px;}
+.event-date-box{width:44px;height:44px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.event-date-box .day{font-size:17px;font-weight:700;line-height:1;}
+.event-date-box .mon{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.event-body .ev-title{font-size:13px;font-weight:500;}
+.event-body .ev-time{font-size:11.5px;color:var(--text3);}
+
+/* ── Table component ─────────────────────────────────── */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text1);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(0,0,0,.012);}
+.t-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;}
+.cell-main{display:flex;align-items:center;gap:10px;}
+.cell-name{font-weight:500;font-size:13px;}
+.cell-sub{font-size:11.5px;color:var(--text3);}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;}
+.badge-green{background:var(--green-bg);color:var(--green);}
+.badge-red{background:var(--red-bg);color:var(--red);}
+.badge-amber{background:var(--amber-bg);color:var(--amber);}
+.badge-blue{background:var(--blue-bg);color:var(--blue);}
+.badge-terra{background:var(--terra-bg);color:var(--terra);}
+.badge-purple{background:var(--purple-bg);color:var(--purple);}
+.badge-navy{background:rgba(13,27,46,.1);color:var(--navy);}
+
+/* Stars */
+.stars{color:var(--gold);font-size:13px;letter-spacing:1px;}
+
+/* Action buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;border:none;}
+.btn-primary{background:var(--terra);color:#fff;}
+.btn-primary:hover{background:var(--terra-light);}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-navy:hover{background:var(--navy2);}
+.btn-outline{background:none;border:1px solid var(--border2);color:var(--text1);}
+.btn-outline:hover{background:var(--cream);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{opacity:.9;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn svg{width:14px;height:14px;}
+
+/* ── Toolbar above tables ────────────────────────────── */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.toolbar-search{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:0 12px;height:36px;flex:1;min-width:180px;max-width:300px;}
+.toolbar-search svg{width:14px;height:14px;color:var(--text3);flex-shrink:0;}
+.toolbar-search input{border:none;background:none;outline:none;font-size:13px;width:100%;}
+.select-filter{border:1px solid var(--border);background:var(--white);border-radius:8px;padding:0 12px;height:36px;font-size:12.5px;outline:none;cursor:pointer;color:var(--text1);}
+.toolbar-right{margin-left:auto;display:flex;gap:8px;}
+
+/* ── Forms ───────────────────────────────────────────── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-grid.one{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.span2{grid-column:span 2;}
+label{font-size:12px;font-weight:500;color:var(--text2);}
+input[type=text],input[type=email],input[type=tel],input[type=date],input[type=url],input[type=number],input[type=password],select,textarea{
+  border:1px solid var(--border2);border-radius:8px;padding:9px 12px;
+  font-size:13px;outline:none;background:var(--white);color:var(--text1);
+  transition:border .15s;width:100%;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--terra);box-shadow:0 0 0 3px rgba(196,100,52,.1);}
+textarea{resize:vertical;min-height:80px;}
+
+/* ── Modal ───────────────────────────────────────────── */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-backdrop.open{opacity:1;pointer-events:all;}
+.modal{background:var(--white);border-radius:var(--radius-lg);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .25s;}
+.modal-backdrop.open .modal{transform:translateY(0);}
+.modal-head{padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;cursor:pointer;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text3);}
+.modal-close:hover{background:var(--cream);}
+.modal-close svg{width:18px;height:18px;}
+.modal-body{padding:20px 24px;}
+.modal-foot{padding:0 24px 22px;display:flex;gap:10px;justify-content:flex-end;}
+
+/* ── Tabs ────────────────────────────────────────────── */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.tab{padding:9px 16px;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .18s;background:none;border-top:none;border-left:none;border-right:none;}
+.tab.active{color:var(--terra);border-bottom-color:var(--terra);}
+.tab:hover:not(.active){color:var(--text1);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* Progress bar */
+.prog-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:6px;}
+.prog-fill{height:100%;border-radius:99px;background:var(--green);transition:width .6s ease;}
+
+/* Stars */
+.rating-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.rating-label{font-size:12px;color:var(--text3);width:32px;}
+.rating-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden;}
+.rating-bar-fill{height:100%;border-radius:99px;background:var(--gold);}
+.rating-count{font-size:12px;color:var(--text3);width:22px;text-align:right;}
+
+/* QR */
+.qr-section{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.qr-box{width:140px;height:140px;border:2px solid var(--border2);border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--white);overflow:hidden;}
+.qr-box svg{width:120px;height:120px;}
+.qr-label{font-size:11px;color:var(--text3);letter-spacing:.5px;}
+.qr-id{font-size:13px;font-weight:600;color:var(--navy);}
+
+/* ── Toast ───────────────────────────────────────────── */
+#toast-area{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--navy);color:#fff;font-size:13px;padding:11px 18px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease;display:flex;align-items:center;gap:8px;max-width:320px;}
+.toast.success{background:var(--green);}
+.toast.error{background:var(--red);}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.toast svg{width:15px;height:15px;flex-shrink:0;}
+
+/* ── Sunday Attendance Special Styles ─────────────────── */
+.sunday-header{
+  background:linear-gradient(135deg,var(--navy),var(--navy3));
+  border-radius:var(--radius-lg);padding:22px 26px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;position:relative;overflow:hidden;
+}
+.sunday-header::after{content:'';position:absolute;right:-30px;top:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(212,169,90,.12) 0%,transparent 70%);border-radius:50%;}
+.sunday-header-info h3{font-family:var(--font-serif);font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sunday-header-info p{font-size:12.5px;color:rgba(255,255,255,.45);}
+.sunday-stats{display:flex;gap:20px;z-index:1;}
+.sunday-stat{text-align:center;}
+.sunday-stat .sv{font-size:24px;font-weight:700;color:var(--gold);line-height:1;}
+.sunday-stat .sl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;margin-top:2px;}
+
+.att-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:16px;}
+.member-att-card{
+  background:var(--white);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  transition:all .18s;
+}
+.member-att-card.present{border-color:rgba(29,158,117,.35);background:rgba(29,158,117,.03);}
+.member-att-card.absent{border-color:var(--border);}
+.member-att-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.member-att-info{flex:1;min-width:0;}
+.member-att-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.member-att-dept{font-size:11.5px;color:var(--text3);margin-top:1px;}
+.att-toggle{
+  width:44px;height:24px;border-radius:99px;border:none;cursor:pointer;
+  position:relative;transition:background .2s;flex-shrink:0;
+  background:var(--border2);
+}
+.att-toggle.on{background:var(--green);}
+.att-toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;background:#fff;
+  transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.att-toggle.on::after{transform:translateX(20px);}
+
+/* Summary chips */
+.att-summary-chips{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.att-chip{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:99px;font-size:12.5px;font-weight:500;border:1.5px solid var(--border);}
+.att-chip.present-chip{background:var(--green-bg);border-color:rgba(29,158,117,.2);color:var(--green);}
+.att-chip.absent-chip{background:var(--red-bg);border-color:rgba(163,45,45,.15);color:var(--red);}
+.att-chip.total-chip{background:var(--blue-bg);border-color:rgba(24,95,165,.15);color:var(--blue);}
+.att-chip-num{font-size:16px;font-weight:700;line-height:1;}
+
+/* Session picker */
+.session-picker{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.session-btn{padding:8px 18px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);font-size:12.5px;font-weight:500;cursor:pointer;transition:all .18s;color:var(--text2);}
+.session-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* Past Sundays table row highlight */
+.sunday-row td:first-child{font-weight:500;}
+.sunday-row.this-week{background:rgba(29,158,117,.03);}
+.sunday-row.this-week td:first-child{color:var(--green);}
+
+/* ── Responsive ──────────────────────────────────────── */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;}
+@media(max-width:768px){
+  .auth-panel-left{display:none;}
+  .auth-panel-right{width:100%;padding:36px 28px;}
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #overlay.show{display:block;}
+  #main{margin-left:0;}
+  #menu-toggle{display:flex;}
+  .content{padding:16px;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.span2{grid-column:span 1;}
+  .two-col{grid-template-columns:1fr;}
+  .topbar{padding:0 16px;}
+  .topbar-search{display:none;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .sunday-stats{gap:12px;}
+  .att-card-grid{grid-template-columns:1fr;}
+}
+@media(max-width:400px){.stats-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     AUTH WRAPPER
+══════════════════════════════════════════ -->
+<div id="auth-wrapper">
+
+  <!-- Left decorative panel -->
+  <div class="auth-panel-left">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">RCN</div>
+      <div class="auth-brand-text">
+        <div class="l1">RCN Magodo</div>
+        <div class="l2">Church Management System</div>
+      </div>
+    </div>
+    <div class="auth-panel-left-body">
+      <div class="auth-tagline">Built for the <span>House of God</span>. Run with excellence.</div>
+      <p class="auth-desc">A complete management platform for RCN Magodo — tracking attendance, members, sermons, donations and more in one place.</p>
+      <div class="auth-features">
+        <div class="auth-feature"><div class="auth-feature-dot"></div><span>Sunday attendance tracking with QR & manual check-in</span></div>
+        <div class="auth-feature"><div class="auth-feature-dot"></div><span>Member profiles and department management</span></div>
+        <div class="auth-feature"><div class="auth-feature-dot"></div><span>Tithes, offerings & donation records</span></div>
+        <div class="auth-feature"><div class="auth-feature-dot"></div><span>Sermon archive with member reviews</span></div>
+        <div class="auth-feature"><div class="auth-feature-dot"></div><span>Broadcast messaging to all or specific departments</span></div>
+      </div>
+    </div>
+    <div class="auth-panel-left-footer">© 2026 RCN Magodo. All rights reserved.</div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="auth-panel-right">
+    <div class="auth-form-switcher">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="auth-form active" id="auth-login">
+      <div class="auth-form-title">Welcome Back</div>
+      <div class="auth-form-sub">Sign in to your RCN Magodo account to continue.</div>
+      <div id="login-error" class="auth-error">Invalid email or password. Please try again.</div>
+
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="login-email" placeholder="you@rcnmagodo.org" />
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="Enter your password" />
+      </div>
+      <span class="auth-forgot">Forgot password?</span>
+
+      <button class="auth-submit" onclick="doLogin()">Sign In to Dashboard</button>
+
+      <div class="auth-divider">or use demo credentials</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn btn-outline btn-sm" style="justify-content:center;width:100%;padding:9px;" onclick="demoLogin('admin')">Admin Demo</button>
+        <button class="btn btn-outline btn-sm" style="justify-content:center;width:100%;padding:9px;" onclick="demoLogin('member')">Member Demo</button>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="auth-form" id="auth-register">
+      <div class="auth-form-title">Create Account</div>
+      <div class="auth-form-sub">Register as a staff or member of RCN Magodo.</div>
+      <div id="reg-error" class="auth-error"></div>
+      <div id="reg-success" class="auth-success">Account created! You can now sign in.</div>
+
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:8px;">Account Type</label>
+        <div class="auth-role-picker">
+          <div class="role-card selected" onclick="selectRole(this,'admin')">
+            <div class="role-card-icon" style="background:var(--terra-bg);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div><div class="role-card-label">Admin / Staff</div><div class="role-card-sub">Full access</div></div>
+          </div>
+          <div class="role-card" onclick="selectRole(this,'member')">
+            <div class="role-card-icon" style="background:var(--blue-bg);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div><div class="role-card-label">Member</div><div class="role-card-sub">View only</div></div>
+          </div>
+        </div>
+        <input type="hidden" id="reg-role" value="admin"/>
+      </div>
+
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>First Name</label>
+          <input type="text" id="reg-first" placeholder="Adaeze"/>
+        </div>
+        <div class="auth-field">
+          <label>Last Name</label>
+          <input type="text" id="reg-last" placeholder="Chukwu"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="reg-email" placeholder="adaeze@rcnmagodo.org"/>
+      </div>
+      <div class="auth-field">
+        <label>Department</label>
+        <select id="reg-dept">
+          <option value="">Select Department</option>
+          <option>Choir</option><option>Ushering</option><option>Media</option>
+          <option>Protocol</option><option>Workers</option><option>Administration</option>
+        </select>
+      </div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Min 6 characters"/>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="reg-confirm" placeholder="Repeat password"/>
+        </div>
+      </div>
+      <button class="auth-submit" onclick="doRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP WRAPPER
+══════════════════════════════════════════ -->
+<div id="app-wrapper" class="hidden">
+
+<!-- Sidebar -->
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">RCN</div>
+    <div class="sb-logo-text">
+      <div class="l1">RCN Magodo</div>
+      <div class="l2">Church Management System</div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <button class="sb-item active" onclick="navigate('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+    <div class="sb-section">Church</div>
+    <button class="sb-item" onclick="navigate('members',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Members
+    </button>
+    <button class="sb-item" onclick="navigate('attendance',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Attendance
+      <span class="sb-badge-green">Sun</span>
+    </button>
+    <button class="sb-item" onclick="navigate('sermons',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      Sermons
+    </button>
+    <button class="sb-item" onclick="navigate('departments',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+      Departments
+    </button>
+    <div class="sb-section">Finance</div>
+    <button class="sb-item" onclick="navigate('donations',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Donations & Tithes
+    </button>
+    <div class="sb-section">Communication</div>
+    <button class="sb-item" onclick="navigate('messaging',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messaging
+    </button>
+  </nav>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sb-avatar-initials">PA</div>
+      <div class="sb-user-text">
+        <div class="name" id="sb-user-name">Pastor Adeyemi</div>
+        <div class="role" id="sb-user-role">Super Admin</div>
+      </div>
+    </div>
+    <button class="sb-logout" onclick="doLogout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </button>
+  </div>
+</aside>
+
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<main id="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <button id="menu-toggle" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="page-title" id="page-title">Dashboard</span>
+    </div>
+    <div class="topbar-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search members, sermons…" oninput="globalSearch(this.value)"/>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn notif-dot" title="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <div class="topbar-avatar" id="topbar-avatar" title="My Account">PA</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══════════════════════════════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="welcome-bar">
+        <div>
+          <div class="greet" id="dash-date">Sunday, 17 May 2026</div>
+          <h2 id="dash-greeting">Good morning, Pastor Adeyemi</h2>
+          <p>Today is Sunday Service day — <span id="dash-checkin-count">142</span> members checked in so far.</p>
+        </div>
+        <div class="live-badge"><span class="live-dot"></span>Service Live</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:var(--blue-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <span class="sc-change up">+12 this month</span>
+          </div>
+          <div class="sc-val">384</div>
+          <div class="sc-label">Total Members</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:var(--green-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <span class="sc-change up">+8 vs last week</span>
+          </div>
+          <div class="sc-val" id="dash-att-count">142</div>
+          <div class="sc-label">Today's Attendance</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:var(--terra-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <span class="sc-change up">+₦18k vs last month</span>
+          </div>
+          <div class="sc-val">₦342k</div>
+          <div class="sc-label">May Donations</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:var(--purple-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <span class="sc-change up">4.7 avg rating</span>
+          </div>
+          <div class="sc-val">28</div>
+          <div class="sc-label">Sermon Archive</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head"><h3>Attendance — Last 6 Sundays</h3><span class="card-action" onclick="navigateTo('attendance')">View all</span></div>
+          <div class="mini-chart" id="att-chart"></div>
+          <div class="mini-labels" id="att-labels"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Quick Actions</h3></div>
+          <div class="quick-grid">
+            <button class="quick-btn" onclick="openModal('modal-add-member')">
+              <div class="qb-icon" style="background:var(--blue-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
+              <div><div class="qb-label">Add Member</div><div class="qb-sub">Register new</div></div>
+            </button>
+            <button class="quick-btn" onclick="navigateTo('attendance')">
+              <div class="qb-icon" style="background:var(--green-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+              <div><div class="qb-label">Mark Attendance</div><div class="qb-sub">Today's service</div></div>
+            </button>
+            <button class="quick-btn" onclick="navigateTo('messaging')">
+              <div class="qb-icon" style="background:var(--terra-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+              <div><div class="qb-label">Send Broadcast</div><div class="qb-sub">SMS / Email</div></div>
+            </button>
+            <button class="quick-btn" onclick="navigateTo('sermons')">
+              <div class="qb-icon" style="background:var(--purple-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></div>
+              <div><div class="qb-label">Upload Sermon</div><div class="qb-sub">Add video link</div></div>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head"><h3>Recent Activity</h3></div>
+          <div class="activity-list">
+            <div class="act-item"><div class="act-avatar" style="background:var(--blue-bg);color:var(--blue);">AC</div><div class="act-body"><div class="act-name">Adaeze Chukwu</div><div class="act-desc">Checked in — Sunday service</div></div><div class="act-time">9:52 AM</div></div>
+            <div class="act-item"><div class="act-avatar" style="background:var(--green-bg);color:var(--green);">KO</div><div class="act-body"><div class="act-name">Kemi Okafor</div><div class="act-desc">New member registered</div></div><div class="act-time">9:40 AM</div></div>
+            <div class="act-item"><div class="act-avatar" style="background:var(--terra-bg);color:var(--terra);">TB</div><div class="act-body"><div class="act-name">Tunde Bello</div><div class="act-desc">Tithe donated — ₦15,000</div></div><div class="act-time">9:35 AM</div></div>
+            <div class="act-item"><div class="act-avatar" style="background:var(--amber-bg);color:var(--amber);">EM</div><div class="act-body"><div class="act-name">Emmanuel Mba</div><div class="act-desc">Checked in — Sunday service</div></div><div class="act-time">9:28 AM</div></div>
+            <div class="act-item"><div class="act-avatar" style="background:var(--purple-bg);color:var(--purple);">PA</div><div class="act-body"><div class="act-name">Pastor Adeyemi</div><div class="act-desc">Sermon uploaded: "Faith Unshaken"</div></div><div class="act-time">Sat 7 PM</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Upcoming Events</h3><span class="card-action" onclick="toast('Event creation coming soon')">+ Add</span></div>
+          <div class="event-list">
+            <div class="event-item">
+              <div class="event-date-box" style="background:var(--blue-bg);"><div class="day" style="color:var(--blue);">17</div><div class="mon" style="color:var(--blue);">MAY</div></div>
+              <div class="event-body"><div class="ev-title">Sunday Service</div><div class="ev-time">10:00 AM — Sanctuary</div></div>
+            </div>
+            <div class="event-item">
+              <div class="event-date-box" style="background:var(--terra-bg);"><div class="day" style="color:var(--terra);">21</div><div class="mon" style="color:var(--terra);">MAY</div></div>
+              <div class="event-body"><div class="ev-title">Midweek Service</div><div class="ev-time">6:00 PM — Main Hall</div></div>
+            </div>
+            <div class="event-item">
+              <div class="event-date-box" style="background:var(--green-bg);"><div class="day" style="color:var(--green);">24</div><div class="mon" style="color:var(--green);">MAY</div></div>
+              <div class="event-body"><div class="ev-title">Youth Convention</div><div class="ev-time">All Day — Church Grounds</div></div>
+            </div>
+            <div class="event-item">
+              <div class="event-date-box" style="background:var(--purple-bg);"><div class="day" style="color:var(--purple);">01</div><div class="mon" style="color:var(--purple);">JUN</div></div>
+              <div class="event-body"><div class="ev-title">Workers' Meeting</div><div class="ev-time">8:00 AM — Conference Room</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MEMBERS ════════════════════════════════════ -->
+    <div class="page" id="page-members">
+      <div class="toolbar">
+        <div class="toolbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search members…" oninput="filterMembers(this.value)"/>
+        </div>
+        <select class="select-filter" onchange="filterMembersByDept(this.value)">
+          <option value="">All Departments</option>
+          <option>Choir</option><option>Ushering</option><option>Media</option>
+          <option>Protocol</option><option>Workers</option>
+        </select>
+        <div class="toolbar-right">
+          <button class="btn btn-primary" onclick="openModal('modal-add-member')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Member
+          </button>
+          <button class="btn btn-outline" onclick="toast('CSV export initiated…')">Export CSV</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="members-table">
+            <thead><tr><th>Member</th><th>Phone</th><th>Department</th><th>Status</th><th>Joined</th><th>Action</th></tr></thead>
+            <tbody id="members-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ATTENDANCE ════════════════════════════════ -->
+    <div class="page" id="page-attendance">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab(this,'att-sunday')">Sunday Service</button>
+        <button class="tab" onclick="switchTab(this,'att-qr')">QR Check-in</button>
+        <button class="tab" onclick="switchTab(this,'att-manual')">Manual Check-in</button>
+        <button class="tab" onclick="switchTab(this,'att-records')">Records</button>
+      </div>
+
+      <!-- ── SUNDAY SERVICE TAB ─────────────────────── -->
+      <div class="tab-panel active" id="att-sunday">
+        <div class="sunday-header">
+          <div class="sunday-header-info">
+            <h3>Sunday Service — 17 May 2026</h3>
+            <p>First Service: 8:00 AM · Second Service: 10:30 AM · Live tracking active</p>
+          </div>
+          <div class="sunday-stats">
+            <div class="sunday-stat"><div class="sv" id="sun-present-count">0</div><div class="sl">Present</div></div>
+            <div class="sunday-stat"><div class="sv" id="sun-absent-count">10</div><div class="sl">Absent</div></div>
+            <div class="sunday-stat"><div class="sv" id="sun-rate">0%</div><div class="sl">Rate</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <div class="session-picker">
+            <button class="session-btn active" onclick="switchSession(this,'First Service')">First Service (8:00 AM)</button>
+            <button class="session-btn" onclick="switchSession(this,'Second Service')">Second Service (10:30 AM)</button>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="markAllPresent()">Mark All Present</button>
+            <button class="btn btn-green btn-sm" onclick="saveSundayAttendance()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save Attendance
+            </button>
+          </div>
+        </div>
+
+        <!-- Search filter -->
+        <div class="toolbar" style="margin-bottom:16px;">
+          <div class="toolbar-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search member…" oninput="filterSundayAtt(this.value)"/>
+          </div>
+          <select class="select-filter" onchange="filterSundayDept(this.value)" id="sunday-dept-filter">
+            <option value="">All Departments</option>
+            <option>Choir</option><option>Ushering</option><option>Media</option>
+            <option>Protocol</option><option>Workers</option>
+          </select>
+        </div>
+
+        <div class="att-summary-chips" id="sunday-summary-chips">
+          <div class="att-chip total-chip"><div class="att-chip-num" id="chip-total">10</div><div>Total members</div></div>
+          <div class="att-chip present-chip"><div class="att-chip-num" id="chip-present">0</div><div>Present</div></div>
+          <div class="att-chip absent-chip"><div class="att-chip-num" id="chip-absent">10</div><div>Absent</div></div>
+        </div>
+
+        <div class="att-card-grid" id="sunday-att-cards"></div>
+      </div>
+
+      <!-- ── QR CHECK-IN TAB ─────────────────────────── -->
+      <div class="tab-panel" id="att-qr">
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head"><h3>QR Code Scanner</h3></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 0;">
+              <div style="width:180px;height:180px;background:var(--cream);border:2px dashed var(--border2);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="3" height="3"/><rect x="14" y="7" width="3" height="3"/><rect x="7" y="14" width="3" height="3"/><path d="M14 14h.01M14 17h.01M17 14h.01M17 17h.01"/></svg>
+                <span style="font-size:12px;color:var(--text3);">Point camera at QR</span>
+              </div>
+              <button class="btn btn-primary" style="width:100%;max-width:240px;justify-content:center;" onclick="simulateScan()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+                Simulate Scan
+              </button>
+              <div id="scan-result" style="font-size:13px;color:var(--text3);"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Today's Check-ins</h3><span style="font-size:13px;font-weight:600;color:var(--green);" id="checkin-count">0 checked in</span></div>
+            <div id="checkin-list" style="display:flex;flex-direction:column;gap:0;max-height:300px;overflow-y:auto;"></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px;">
+          <div class="card-head"><h3>Member QR Codes</h3><span class="card-action" onclick="toast('Downloading all QR codes…')">Download all</span></div>
+          <div style="display:flex;gap:20px;flex-wrap:wrap;padding:8px 0;">
+            <div class="qr-section">
+              <div class="qr-box">
+                <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="10" y="10" width="40" height="40" fill="none" stroke="var(--navy)" stroke-width="3" rx="2"/><rect x="18" y="18" width="24" height="24" fill="var(--navy)" rx="1"/>
+                  <rect x="70" y="10" width="40" height="40" fill="none" stroke="var(--navy)" stroke-width="3" rx="2"/><rect x="78" y="18" width="24" height="24" fill="var(--navy)" rx="1"/>
+                  <rect x="10" y="70" width="40" height="40" fill="none" stroke="var(--navy)" stroke-width="3" rx="2"/><rect x="18" y="78" width="24" height="24" fill="var(--navy)" rx="1"/>
+                  <g fill="var(--navy)"><rect x="58" y="58" width="8" height="8"/><rect x="70" y="58" width="8" height="8"/><rect x="82" y="58" width="8" height="8"/><rect x="70" y="70" width="8" height="8"/><rect x="94" y="70" width="16" height="8"/><rect x="58" y="82" width="8" height="8"/><rect x="82" y="82" width="8" height="8"/><rect x="58" y="94" width="24" height="8"/><rect x="94" y="94" width="16" height="8"/></g>
+                </svg>
+              </div>
+              <div class="qr-id">RCN-MAG-0042</div>
+              <div class="qr-label">Adaeze Chukwu · Choir</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MANUAL CHECK-IN TAB ─────────────────────── -->
+      <div class="tab-panel" id="att-manual">
+        <div class="card">
+          <div class="card-head"><h3>Manual Attendance — Sunday 17 May 2026</h3></div>
+          <div class="toolbar" style="margin-bottom:12px;">
+            <div class="toolbar-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Search member…"/>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="markAllPresent()">Mark all present</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Member</th><th>Department</th><th>Status</th><th>Time</th></tr></thead>
+              <tbody id="manual-att-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RECORDS TAB ─────────────────────────────── -->
+      <div class="tab-panel" id="att-records">
+        <div class="card">
+          <div class="card-head"><h3>Sunday Attendance Records</h3><button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button></div>
+          <div class="mini-chart" id="att-trend-chart" style="height:90px;"></div>
+          <div class="mini-labels" id="att-trend-labels" style="margin-bottom:20px;"></div>
+          <div class="table-wrap" style="margin-top:16px;">
+            <table>
+              <thead><tr><th>Date</th><th>Service</th><th>Session</th><th>Present</th><th>Total</th><th>Rate</th><th>Preacher</th></tr></thead>
+              <tbody id="att-records-tbody">
+                <tr class="sunday-row this-week"><td>17 May 2026 (Today)</td><td>Sunday Service</td><td>Both</td><td id="rec-today-count">0</td><td>384</td><td id="rec-today-rate"><span class="badge badge-amber">0%</span></td><td>Pastor Adeyemi</td></tr>
+                <tr class="sunday-row"><td>10 May 2026</td><td>Sunday Service</td><td>Both</td><td>148</td><td>384</td><td><span class="badge badge-green">39%</span></td><td>Pastor Adeyemi</td></tr>
+                <tr class="sunday-row"><td>03 May 2026</td><td>Sunday Service</td><td>Both</td><td>162</td><td>384</td><td><span class="badge badge-green">42%</span></td><td>Dcn Okonkwo</td></tr>
+                <tr class="sunday-row"><td>26 Apr 2026</td><td>Sunday Service</td><td>Both</td><td>121</td><td>380</td><td><span class="badge badge-amber">32%</span></td><td>Pastor Adeyemi</td></tr>
+                <tr class="sunday-row"><td>19 Apr 2026</td><td>Sunday Service</td><td>Both</td><td>134</td><td>378</td><td><span class="badge badge-green">35%</span></td><td>Pastor Adeyemi</td></tr>
+                <tr class="sunday-row"><td>12 Apr 2026</td><td>Sunday Service</td><td>Both</td><td>109</td><td>375</td><td><span class="badge badge-amber">29%</span></td><td>Dcn Okonkwo</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SERMONS ════════════════════════════════════ -->
+    <div class="page" id="page-sermons">
+      <div class="toolbar">
+        <div class="toolbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search sermons…"/>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-primary" onclick="openModal('modal-add-sermon')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Upload Sermon
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="sermons-table">
+            <thead><tr><th>Title</th><th>Preacher</th><th>Date</th><th>Reviews</th><th>Rating</th><th>Action</th></tr></thead>
+            <tbody id="sermons-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-top:20px;">
+        <div class="card-head"><h3>Sermon Reviews — "Faith Unshaken"</h3></div>
+        <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;">
+          <div style="text-align:center;flex-shrink:0;">
+            <div style="font-size:48px;font-weight:700;color:var(--navy);line-height:1;">4.7</div>
+            <div class="stars">★★★★★</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:4px;">38 reviews</div>
+          </div>
+          <div style="flex:1;min-width:180px;">
+            <div class="rating-row"><span class="rating-label">5★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" style="width:74%"></div></div><span class="rating-count">28</span></div>
+            <div class="rating-row"><span class="rating-label">4★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" style="width:18%"></div></div><span class="rating-count">7</span></div>
+            <div class="rating-row"><span class="rating-label">3★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" style="width:5%"></div></div><span class="rating-count">2</span></div>
+            <div class="rating-row"><span class="rating-label">2★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" style="width:2%"></div></div><span class="rating-count">1</span></div>
+            <div class="rating-row"><span class="rating-label">1★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" style="width:0%"></div></div><span class="rating-count">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ DEPARTMENTS ════════════════════════════════ -->
+    <div class="page" id="page-departments">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+        <div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:42px;height:42px;border-radius:10px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div><div style="font-size:14px;font-weight:600;">Choir</div><div style="font-size:12px;color:var(--text3);">Music Ministry</div></div></div><div style="font-size:28px;font-weight:700;color:var(--navy);margin-bottom:2px;">42</div><div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Active members</div><button class="btn btn-outline btn-sm" style="width:100%;" onclick="viewDept('Choir')">View Members</button></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:42px;height:42px;border-radius:10px;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div style="font-size:14px;font-weight:600;">Ushering</div><div style="font-size:12px;color:var(--text3);">Protocol & Welcome</div></div></div><div style="font-size:28px;font-weight:700;color:var(--navy);margin-bottom:2px;">28</div><div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Active members</div><button class="btn btn-outline btn-sm" style="width:100%;" onclick="viewDept('Ushering')">View Members</button></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:42px;height:42px;border-radius:10px;background:var(--terra-bg);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><div style="font-size:14px;font-weight:600;">Media</div><div style="font-size:12px;color:var(--text3);">Tech & Production</div></div></div><div style="font-size:28px;font-weight:700;color:var(--navy);margin-bottom:2px;">15</div><div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Active members</div><button class="btn btn-outline btn-sm" style="width:100%;" onclick="viewDept('Media')">View Members</button></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:42px;height:42px;border-radius:10px;background:var(--green-bg);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div style="font-size:14px;font-weight:600;">Protocol</div><div style="font-size:12px;color:var(--text3);">Events & Order</div></div></div><div style="font-size:28px;font-weight:700;color:var(--navy);margin-bottom:2px;">20</div><div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Active members</div><button class="btn btn-outline btn-sm" style="width:100%;" onclick="viewDept('Protocol')">View Members</button></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:42px;height:42px;border-radius:10px;background:var(--amber-bg);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div><div><div style="font-size:14px;font-weight:600;">Workers</div><div style="font-size:12px;color:var(--text3);">General Workers</div></div></div><div style="font-size:28px;font-weight:700;color:var(--navy);margin-bottom:2px;">67</div><div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Active members</div><button class="btn btn-outline btn-sm" style="width:100%;" onclick="viewDept('Workers')">View Members</button></div>
+      </div>
+    </div>
+
+    <!-- ═══ DONATIONS ══════════════════════════════════ -->
+    <div class="page" id="page-donations">
+      <div class="stats-grid" style="margin-bottom:20px;">
+        <div class="stat-card"><div class="sc-top"><div class="sc-icon" style="background:var(--terra-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="sc-change up">+22%</span></div><div class="sc-val">₦342k</div><div class="sc-label">May Total</div></div>
+        <div class="stat-card"><div class="sc-top"><div class="sc-icon" style="background:var(--green-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><span class="sc-change up">108 givers</span></div><div class="sc-val">₦217k</div><div class="sc-label">May Tithes</div></div>
+        <div class="stat-card"><div class="sc-top"><div class="sc-icon" style="background:var(--blue-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="sc-change up">28 donors</span></div><div class="sc-val">₦125k</div><div class="sc-label">May Offerings</div></div>
+        <div class="stat-card"><div class="sc-top"><div class="sc-icon" style="background:var(--purple-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="sc-change up">Special</span></div><div class="sc-val">₦58k</div><div class="sc-label">Project Fund</div></div>
+      </div>
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-head"><h3>Monthly Goal Progress</h3><span style="font-size:13px;font-weight:600;color:var(--terra);">₦342k / ₦500k</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:68.4%;background:var(--terra);"></div></div>
+        <div style="font-size:12px;color:var(--text3);margin-top:6px;">68% of monthly goal — ₦158k remaining</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Recent Transactions</h3><button class="btn btn-outline btn-sm" onclick="exportDonationsCSV()">Export</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Member</th><th>Type</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="donations-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MESSAGING ══════════════════════════════════ -->
+    <div class="page" id="page-messaging">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head"><h3>New Broadcast</h3></div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="form-group"><label>Channel</label><select><option>Email + SMS</option><option>Email only</option><option>SMS only</option><option>Dashboard notification</option></select></div>
+            <div class="form-group"><label>Target Group</label><select><option>All Members (384)</option><option>Choir (42)</option><option>Ushering (28)</option><option>Media (15)</option><option>Protocol (20)</option><option>Workers (67)</option></select></div>
+            <div class="form-group"><label>Message Title</label><input type="text" placeholder="e.g. Sunday Service Reminder"/></div>
+            <div class="form-group"><label>Message Body</label><textarea rows="5" placeholder="Type your message here…"></textarea></div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="toast('Draft saved')">Save Draft</button>
+              <button class="btn btn-primary" style="flex:1;" onclick="sendBroadcast()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Send Now
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Message History</h3></div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="padding:12px;border:1px solid var(--border);border-radius:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:500;">Sunday Reminder</span><span class="badge badge-green">Sent</span></div><div style="font-size:12px;color:var(--text3);">All Members · Email + SMS · 16 May, 7:00 PM</div><div style="font-size:12.5px;color:var(--text2);margin-top:4px;">384 delivered · 12 failed</div></div>
+            <div style="padding:12px;border:1px solid var(--border);border-radius:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:500;">Youth Convention Notice</span><span class="badge badge-green">Sent</span></div><div style="font-size:12px;color:var(--text3);">All Members · SMS only · 14 May, 2:00 PM</div><div style="font-size:12.5px;color:var(--text2);margin-top:4px;">376 delivered · 8 failed</div></div>
+            <div style="padding:12px;border:1px solid var(--border);border-radius:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:500;">Choir Rehearsal Update</span><span class="badge badge-amber">Draft</span></div><div style="font-size:12px;color:var(--text3);">Choir · Email only · Saved 13 May</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /app-wrapper -->
+
+<!-- ── MODALS ───────────────────────────────────────────── -->
+
+<!-- Add Member Modal -->
+<div class="modal-backdrop" id="modal-add-member">
+  <div class="modal">
+    <div class="modal-head"><h3>Add New Member</h3><button class="modal-close" onclick="closeModal('modal-add-member')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>First Name *</label><input type="text" placeholder="Adaeze"/></div>
+        <div class="form-group"><label>Last Name *</label><input type="text" placeholder="Chukwu"/></div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="adaeze@email.com"/></div>
+        <div class="form-group"><label>Phone *</label><input type="tel" placeholder="080XXXXXXXX"/></div>
+        <div class="form-group"><label>Department</label><select><option>Choir</option><option>Ushering</option><option>Media</option><option>Protocol</option><option>Workers</option></select></div>
+        <div class="form-group"><label>Date Joined</label><input type="date"/></div>
+        <div class="form-group"><label>Gender</label><select><option>Female</option><option>Male</option></select></div>
+        <div class="form-group"><label>Status</label><select><option>Active</option><option>Inactive</option></select></div>
+        <div class="form-group span2"><label>Address</label><input type="text" placeholder="e.g. 12 Church Street, Magodo, Lagos"/></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('modal-add-member')">Cancel</button>
+      <button class="btn btn-primary" onclick="addMember()">Add Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Sermon Modal -->
+<div class="modal-backdrop" id="modal-add-sermon">
+  <div class="modal">
+    <div class="modal-head"><h3>Upload Sermon</h3><button class="modal-close" onclick="closeModal('modal-add-sermon')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group span2"><label>Sermon Title *</label><input type="text" placeholder="e.g. Faith Unshaken"/></div>
+        <div class="form-group"><label>Preacher *</label><input type="text" placeholder="Pastor Adeyemi"/></div>
+        <div class="form-group"><label>Date *</label><input type="date"/></div>
+        <div class="form-group span2"><label>Video URL</label><input type="url" placeholder="https://youtube.com/…"/></div>
+        <div class="form-group span2"><label>Description</label><textarea placeholder="Brief summary of the sermon…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('modal-add-sermon')">Cancel</button>
+      <button class="btn btn-primary" onclick="addSermon()">Publish Sermon</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast area -->
+<div id="toast-area"></div>
+
+<script>
+// ────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────
+const AVATARBG=['#dbeafe','#dcfce7','#fde8d8','#fef3c7','#ede9fe','#d1fae5','#fee2e2'];
+const AVCOLOR=['#1d4ed8','#16a34a','#c46434','#b45309','#7c3aed','#059669','#991b1b'];
+
+const members=[
+  {id:'RCN-0001',name:'Adaeze Chukwu',phone:'0801 234 5678',dept:'Choir',status:'Active',joined:'Jan 2023',ci:false,colorIdx:0},
+  {id:'RCN-0002',name:'Tunde Bello',phone:'0802 345 6789',dept:'Ushering',status:'Active',joined:'Mar 2022',ci:false,colorIdx:1},
+  {id:'RCN-0003',name:'Kemi Okafor',phone:'0803 456 7890',dept:'Media',status:'Active',joined:'Jun 2023',ci:false,colorIdx:2},
+  {id:'RCN-0004',name:'Emmanuel Mba',phone:'0804 567 8901',dept:'Protocol',status:'Active',joined:'Feb 2021',ci:false,colorIdx:3},
+  {id:'RCN-0005',name:'Ngozi Ibe',phone:'0805 678 9012',dept:'Workers',status:'Active',joined:'Aug 2022',ci:false,colorIdx:4},
+  {id:'RCN-0006',name:'Chidi Eze',phone:'0806 789 0123',dept:'Choir',status:'Active',joined:'Nov 2023',ci:false,colorIdx:5},
+  {id:'RCN-0007',name:'Funmi Adeyemi',phone:'0807 890 1234',dept:'Ushering',status:'Inactive',joined:'Apr 2021',ci:false,colorIdx:6},
+  {id:'RCN-0008',name:'Samuel Ogundele',phone:'0808 901 2345',dept:'Media',status:'Active',joined:'Jan 2024',ci:false,colorIdx:0},
+  {id:'RCN-0009',name:'Blessing Nwosu',phone:'0809 012 3456',dept:'Choir',status:'Active',joined:'Mar 2023',ci:false,colorIdx:1},
+  {id:'RCN-0010',name:'Daniel Ajayi',phone:'0810 123 4567',dept:'Workers',status:'Active',joined:'Jul 2022',ci:false,colorIdx:2},
+];
+
+const sermons=[
+  {title:'Faith Unshaken',preacher:'Pastor Adeyemi',date:'10 May 2026',reviews:38,rating:4.7},
+  {title:'The Power of Praise',preacher:'Dcn Okonkwo',date:'03 May 2026',reviews:22,rating:4.5},
+  {title:'Walking in His Light',preacher:'Pastor Adeyemi',date:'26 Apr 2026',reviews:15,rating:4.8},
+  {title:'Covenant Blessings',preacher:'Pastor Adeyemi',date:'19 Apr 2026',reviews:31,rating:4.6},
+];
+const donations=[
+  {member:'Adaeze Chukwu',type:'Tithe',amount:'₦25,000',method:'Bank Transfer',date:'17 May 2026',status:'Completed'},
+  {member:'Tunde Bello',type:'Offering',amount:'₦5,000',method:'POS',date:'17 May 2026',status:'Completed'},
+  {member:'Emmanuel Mba',type:'Project Fund',amount:'₦50,000',method:'Bank Transfer',date:'16 May 2026',status:'Completed'},
+  {member:'Ngozi Ibe',type:'Tithe',amount:'₦18,000',method:'Cash',date:'10 May 2026',status:'Completed'},
+  {member:'Samuel Ogundele',type:'Offering',amount:'₦3,500',method:'POS',date:'10 May 2026',status:'Pending'},
+];
+const attWeeks=['Apr 12','Apr 19','Apr 26','May 3','May 10','May 17'];
+const attValues=[109,134,121,162,148,0];
+
+let currentSession='First Service';
+let sundayAttendance={};
+
+// Demo accounts
+const DEMO_ACCOUNTS={
+  'admin@rcnmagodo.org':{password:'admin123',name:'Pastor Adeyemi',role:'Super Admin',initials:'PA'},
+  'member@rcnmagodo.org':{password:'member123',name:'Adaeze Chukwu',role:'Member',initials:'AC'},
+};
+let registeredAccounts={...DEMO_ACCOUNTS};
+let currentUser=null;
+
+// ────────────────────────────────────────────
+// AUTH FUNCTIONS
+// ────────────────────────────────────────────
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>{
+    t.classList.toggle('active',i===(tab==='login'?0:1));
+  });
+  document.getElementById('auth-login').classList.toggle('active',tab==='login');
+  document.getElementById('auth-register').classList.toggle('active',tab==='register');
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('reg-error').classList.remove('show');
+  document.getElementById('reg-success').classList.remove('show');
+}
+
+function selectRole(el,role){
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('reg-role').value=role;
+}
+
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim().toLowerCase();
+  const password=document.getElementById('login-password').value;
+  const err=document.getElementById('login-error');
+  err.classList.remove('show');
+  if(!email||!password){err.textContent='Please fill in all fields.';err.classList.add('show');return;}
+  const account=registeredAccounts[email];
+  if(!account||account.password!==password){err.textContent='Invalid email or password. Please try again.';err.classList.add('show');return;}
+  currentUser={email,...account};
+  launchApp();
+}
+
+function demoLogin(type){
+  if(type==='admin'){
+    document.getElementById('login-email').value='admin@rcnmagodo.org';
+    document.getElementById('login-password').value='admin123';
+  } else {
+    document.getElementById('login-email').value='member@rcnmagodo.org';
+    document.getElementById('login-password').value='member123';
+  }
+  doLogin();
+}
+
+function doRegister(){
+  const first=document.getElementById('reg-first').value.trim();
+  const last=document.getElementById('reg-last').value.trim();
+  const email=document.getElementById('reg-email').value.trim().toLowerCase();
+  const dept=document.getElementById('reg-dept').value;
+  const pass=document.getElementById('reg-password').value;
+  const confirm=document.getElementById('reg-confirm').value;
+  const role=document.getElementById('reg-role').value;
+  const err=document.getElementById('reg-error');
+  const suc=document.getElementById('reg-success');
+  err.classList.remove('show');suc.classList.remove('show');
+
+  if(!first||!last||!email||!pass||!confirm){err.textContent='Please fill in all required fields.';err.classList.add('show');return;}
+  if(pass.length<6){err.textContent='Password must be at least 6 characters.';err.classList.add('show');return;}
+  if(pass!==confirm){err.textContent='Passwords do not match.';err.classList.add('show');return;}
+  if(registeredAccounts[email]){err.textContent='An account with this email already exists.';err.classList.add('show');return;}
+
+  const initials=(first[0]+last[0]).toUpperCase();
+  registeredAccounts[email]={
+    password:pass,
+    name:`${first} ${last}`,
+    role:role==='admin'?'Admin / Staff':'Member',
+    initials,dept
+  };
+  suc.classList.add('show');
+  setTimeout(()=>{switchAuthTab('login');document.getElementById('login-email').value=email;},1200);
+}
+
+function launchApp(){
+  document.getElementById('auth-wrapper').classList.add('hidden');
+  document.getElementById('app-wrapper').classList.remove('hidden');
+  // Update UI with current user
+  document.getElementById('sb-user-name').textContent=currentUser.name;
+  document.getElementById('sb-user-role').textContent=currentUser.role;
+  document.getElementById('sb-avatar-initials').textContent=currentUser.initials;
+  document.getElementById('topbar-avatar').textContent=currentUser.initials;
+  // Update greeting
+  const now=new Date();
+  const h=now.getHours();
+  const greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('dash-greeting').textContent=`${greet}, ${currentUser.name}`;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('dash-date').textContent=`${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  init();
+}
+
+function doLogout(){
+  currentUser=null;
+  document.getElementById('auth-wrapper').classList.remove('hidden');
+  document.getElementById('app-wrapper').classList.add('hidden');
+  document.getElementById('login-email').value='';
+  document.getElementById('login-password').value='';
+  document.getElementById('login-error').classList.remove('show');
+  toast('Signed out successfully');
+}
+
+// ────────────────────────────────────────────
+// NAVIGATION
+// ────────────────────────────────────────────
+const PAGE_TITLES={dashboard:'Dashboard',members:'Members',attendance:'Attendance',sermons:'Sermons',departments:'Departments',donations:'Donations & Tithes',messaging:'Messaging'};
+
+function navigate(pageId,triggerEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+pageId).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  if(triggerEl)triggerEl.classList.add('active');
+  document.getElementById('page-title').textContent=PAGE_TITLES[pageId]||pageId;
+  closeSidebar();
+}
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+function switchTab(el,panelId){
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const wrap=el.closest('.page');
+  wrap.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+}
+
+// ────────────────────────────────────────────
+// SUNDAY ATTENDANCE
+// ────────────────────────────────────────────
+function renderSundayCards(list){
+  const container=document.getElementById('sunday-att-cards');
+  container.innerHTML=list.map(m=>{
+    const key=m.id+'-'+currentSession;
+    const present=sundayAttendance[key]||false;
+    return `
+    <div class="member-att-card ${present?'present':'absent'}" id="attcard-${m.id.replace('-','')}">
+      <div class="member-att-avatar" style="background:${AVATARBG[m.colorIdx]};color:${AVCOLOR[m.colorIdx]};">${m.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+      <div class="member-att-info">
+        <div class="member-att-name">${m.name}</div>
+        <div class="member-att-dept">${m.dept} · <span style="font-weight:500;color:${present?'var(--green)':'var(--red)'};">${present?'Present':'Absent'}</span></div>
+      </div>
+      <button class="att-toggle ${present?'on':''}" onclick="toggleSundayAtt('${m.id}',this)" title="Toggle attendance"></button>
+    </div>`;
+  }).join('');
+  updateSundayStats();
+}
+
+function toggleSundayAtt(memberId,btn){
+  const key=memberId+'-'+currentSession;
+  sundayAttendance[key]=!sundayAttendance[key];
+  const present=sundayAttendance[key];
+  btn.classList.toggle('on',present);
+  const card=btn.closest('.member-att-card');
+  card.classList.toggle('present',present);
+  card.classList.toggle('absent',!present);
+  const deptSpan=card.querySelector('.member-att-dept span');
+  if(deptSpan){deptSpan.style.color=present?'var(--green)':'var(--red)';deptSpan.textContent=present?'Present':'Absent';}
+  updateSundayStats();
+}
+
+function updateSundayStats(){
+  const total=members.length;
+  const presentKeys=members.filter(m=>sundayAttendance[m.id+'-'+currentSession]).length;
+  const absent=total-presentKeys;
+  const rate=total?Math.round(presentKeys/total*100):0;
+  document.getElementById('sun-present-count').textContent=presentKeys;
+  document.getElementById('sun-absent-count').textContent=absent;
+  document.getElementById('sun-rate').textContent=rate+'%';
+  document.getElementById('chip-total').textContent=total;
+  document.getElementById('chip-present').textContent=presentKeys;
+  document.getElementById('chip-absent').textContent=absent;
+  // Update dashboard count
+  document.getElementById('dash-att-count').textContent=presentKeys;
+  document.getElementById('dash-checkin-count').textContent=presentKeys;
+  // Update records row
+  document.getElementById('rec-today-count').textContent=presentKeys;
+  const rateEl=document.getElementById('rec-today-rate');
+  const cls=rate>=35?'badge-green':'badge-amber';
+  rateEl.innerHTML=`<span class="badge ${cls}">${rate}%</span>`;
+}
+
+function switchSession(btn,session){
+  currentSession=session;
+  document.querySelectorAll('.session-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSundayCards(members);
+  toast(`Switched to ${session}`);
+}
+
+function markAllPresent(){
+  members.forEach(m=>{sundayAttendance[m.id+'-'+currentSession]=true;});
+  renderSundayCards(members);
+  renderManualAtt();
+  toast('All members marked present','success');
+}
+
+function saveSundayAttendance(){
+  const cnt=members.filter(m=>sundayAttendance[m.id+'-'+currentSession]).length;
+  toast(`Attendance saved — ${cnt} of ${members.length} present for ${currentSession}`,'success');
+}
+
+function filterSundayAtt(q){
+  const f=q.toLowerCase();
+  const filtered=members.filter(m=>m.name.toLowerCase().includes(f)||m.dept.toLowerCase().includes(f));
+  renderSundayCards(filtered);
+}
+function filterSundayDept(dept){
+  const filtered=dept?members.filter(m=>m.dept===dept):members;
+  renderSundayCards(filtered);
+}
+
+// ────────────────────────────────────────────
+// MEMBERS TABLE
+// ────────────────────────────────────────────
+function renderMembers(list){
+  document.getElementById('members-tbody').innerHTML=list.map(m=>`
+    <tr>
+      <td><div class="cell-main">
+        <div class="t-avatar" style="background:${AVATARBG[m.colorIdx]};color:${AVCOLOR[m.colorIdx]};">${m.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+        <div><div class="cell-name">${m.name}</div><div class="cell-sub">${m.id}</div></div>
+      </div></td>
+      <td>${m.phone}</td>
+      <td><span class="badge badge-blue">${m.dept}</span></td>
+      <td><span class="badge ${m.status==='Active'?'badge-green':'badge-red'}">${m.status}</span></td>
+      <td>${m.joined}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="toast('Opening profile for ${m.name}…')">View</button></td>
+    </tr>`).join('');
+}
+function filterMembers(q){const f=q.toLowerCase();renderMembers(members.filter(m=>m.name.toLowerCase().includes(f)||m.dept.toLowerCase().includes(f)||m.id.toLowerCase().includes(f)));}
+function filterMembersByDept(d){renderMembers(d?members.filter(m=>m.dept===d):members);}
+
+// ────────────────────────────────────────────
+// MANUAL ATTENDANCE TABLE
+// ────────────────────────────────────────────
+function renderManualAtt(){
+  document.getElementById('manual-att-tbody').innerHTML=members.map(m=>{
+    const key=m.id+'-'+currentSession;
+    const present=sundayAttendance[key]||false;
+    return `
+    <tr>
+      <td><div class="cell-main">
+        <div class="t-avatar" style="background:${AVATARBG[m.colorIdx]};color:${AVCOLOR[m.colorIdx]};">${m.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+        <div class="cell-name">${m.name}</div>
+      </div></td>
+      <td>${m.dept}</td>
+      <td><label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" ${present?'checked':''} onchange="toggleManualAtt(this,'${m.id}')"/>
+        <span class="badge ${present?'badge-green':'badge-red'}" id="mbadge-${m.id}">${present?'Present':'Absent'}</span>
+      </label></td>
+      <td style="font-size:12px;color:var(--text3);">${present?'10:0'+Math.floor(Math.random()*9)+':00 AM':'—'}</td>
+    </tr>`;
+  }).join('');
+}
+function toggleManualAtt(cb,id){
+  const key=id+'-'+currentSession;
+  sundayAttendance[key]=cb.checked;
+  const badge=document.getElementById('mbadge-'+id);
+  if(badge){badge.className='badge '+(cb.checked?'badge-green':'badge-red');badge.textContent=cb.checked?'Present':'Absent';}
+  updateSundayStats();
+  toast(cb.checked?'Marked present':'Marked absent');
+}
+
+// ────────────────────────────────────────────
+// SERMONS & DONATIONS
+// ────────────────────────────────────────────
+function renderSermons(){
+  document.getElementById('sermons-tbody').innerHTML=sermons.map(s=>`
+    <tr>
+      <td><div class="cell-name">${s.title}</div></td>
+      <td>${s.preacher}</td>
+      <td>${s.date}</td>
+      <td>${s.reviews}</td>
+      <td><span class="stars">${'★'.repeat(Math.round(s.rating))}${'☆'.repeat(5-Math.round(s.rating))}</span> <span style="font-size:12px;color:var(--text3);">${s.rating}</span></td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" onclick="toast('Opening: ${s.title}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="toast('Deleting…')">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+function renderDonations(){
+  document.getElementById('donations-tbody').innerHTML=donations.map(d=>`
+    <tr>
+      <td>${d.member}</td>
+      <td><span class="badge badge-blue">${d.type}</span></td>
+      <td style="font-weight:600;">${d.amount}</td>
+      <td>${d.method}</td>
+      <td>${d.date}</td>
+      <td><span class="badge ${d.status==='Completed'?'badge-green':'badge-amber'}">${d.status}</span></td>
+    </tr>`).join('');
+}
+
+// ────────────────────────────────────────────
+// QR CHECK-IN
+// ────────────────────────────────────────────
+let scanIdx=0;
+function simulateScan(){
+  const m=members[scanIdx%members.length];
+  scanIdx++;
+  sundayAttendance[m.id+'-'+currentSession]=true;
+  document.getElementById('scan-result').innerHTML=`<span style="color:var(--green);font-weight:500;">${m.name} checked in — ${m.dept}</span>`;
+  const cnt=members.filter(x=>sundayAttendance[x.id+'-'+currentSession]).length;
+  document.getElementById('checkin-count').textContent=`${cnt} checked in`;
+  renderCheckins();
+  updateSundayStats();
+  toast(`${m.name} checked in`,'success');
+}
+function renderCheckins(){
+  const list=document.getElementById('checkin-list');
+  const ci=members.filter(m=>sundayAttendance[m.id+'-'+currentSession]).slice(0,8);
+  list.innerHTML=ci.map(m=>`
+    <div class="act-item">
+      <div class="act-avatar" style="background:${AVATARBG[m.colorIdx]};color:${AVCOLOR[m.colorIdx]};">${m.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+      <div class="act-body"><div class="act-name">${m.name}</div><div class="act-desc">${m.dept}</div></div>
+      <div class="act-time" style="color:var(--green);font-weight:600;font-size:16px;">&#10003;</div>
+    </div>`).join('');
+}
+
+// ────────────────────────────────────────────
+// CHART
+// ────────────────────────────────────────────
+function renderChart(chartId,labelsId,vals,labels,color){
+  const el=document.getElementById(chartId);
+  const lel=document.getElementById(labelsId);
+  if(!el)return;
+  const max=Math.max(...vals,1);
+  el.innerHTML=vals.map((v,i)=>`<div class="mini-bar" style="height:${Math.max(Math.round(v/max*100),4)}%;background:${i===vals.length-1?color:'rgba(196,100,52,.22)'};"></div>`).join('');
+  if(lel)lel.innerHTML=labels.map(l=>`<span>${l}</span>`).join('');
+}
+
+// ────────────────────────────────────────────
+// MODALS
+// ────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+// Modal backdrop close — wired in init()
+
+// ────────────────────────────────────────────
+// ACTIONS
+// ────────────────────────────────────────────
+function addMember(){closeModal('modal-add-member');toast('Member added successfully','success');}
+function addSermon(){closeModal('modal-add-sermon');toast('Sermon published successfully','success');}
+function sendBroadcast(){toast('Broadcast sent to all members!','success');}
+function viewDept(dept){navigateTo('members');filterMembersByDept(dept);const sel=document.querySelector('.select-filter');if(sel)sel.value=dept;}
+
+// ────────────────────────────────────────────
+// TOAS
+// ────────────────────────────────────────────
+function toast(msg,type=''){
+  const area=document.getElementById('toast-area');
+  const el=document.createElement('div');
+  el.className='toast'+(type?' '+type:'');
+  el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${type==='success'?'<polyline points="20 6 9 17 4 12"/>':type==='error'?'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>':`<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>`}</svg>${msg}`;
+  area.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);},3000);
+}
+
+// ────────────────────────────────────────────
+// NAVIGATE BY ID (no element reference needed)
+// ────────────────────────────────────────────
+function navigateTo(pageId){
+  const btn=document.querySelector(`.sb-item[onclick*="${pageId}"]`);
+  navigate(pageId,btn);
+}
+
+// ────────────────────────────────────────────
+// GLOBAL SEARCH
+// ────────────────────────────────────────────
+function globalSearch(q){
+  if(!q){return;}
+  navigateTo('members');
+  filterMembers(q);
+}
+
+// ────────────────────────────────────────────
+// CSV EXPORT
+// ────────────────────────────────────────────
+function exportCSV(){
+  const rows=[['Date','Service','Session','Present','Total','Rate','Preacher']];
+  document.querySelectorAll('#att-records-tbody tr').forEach(tr=>{
+    rows.push([...tr.querySelectorAll('td')].map(td=>td.textContent.replace(/[,\n]/g,' ').trim()));
+  });
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  downloadText(csv,'attendance-records.csv','text/csv');
+}
+
+function exportDonationsCSV(){
+  const rows=[['Member','Type','Amount','Method','Date','Status']];
+  document.querySelectorAll('#donations-tbody tr').forEach(tr=>{
+    rows.push([...tr.querySelectorAll('td')].map(td=>td.textContent.replace(/[,\n]/g,' ').trim()));
+  });
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  downloadText(csv,'donations.csv','text/csv');
+}
+
+function downloadText(content,filename,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=filename;a.click();URL.revokeObjectURL(a.href);
+  toast(`${filename} downloaded`,'success');
+}
+
+function init(){
+  // Wire modal backdrop close
+  document.querySelectorAll('.modal-backdrop').forEach(b=>b.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+  renderMembers(members);
+  renderSundayCards(members);
+  renderManualAtt();
+  renderSermons();
+  renderDonations();
+  renderCheckins();
+  renderChart('att-chart','att-labels',attValues,attWeeks,'var(--terra)');
+  renderChart('att-trend-chart','att-trend-labels',attValues,attWeeks,'var(--navy)');
+}
+</script>
+</body>
+</html>
